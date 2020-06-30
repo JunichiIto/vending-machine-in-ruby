@@ -1,8 +1,10 @@
 class Suica
-  attr_accessor :balance
+  attr_accessor :balance, :user_age, :user_sex
 
-  def initialize(money)
+  def initialize(money, user_age, user_sex)
     @balance = money >= 100 ? money : nil
+    @user_age = user_age
+    @user_sex = user_sex
   end
 
   def charge(money)
