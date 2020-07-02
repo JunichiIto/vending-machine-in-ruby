@@ -4,7 +4,7 @@ class Suica
   def initialize(money, user_age, user_sex)
     @balance = money >= 100 ? money : nil
     @user_age = user_age
-    @user_sex = user_sex
+    @user_sex = user_sex # ISO 5218
   end
 
   def charge(money)
