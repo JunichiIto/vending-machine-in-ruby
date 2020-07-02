@@ -55,7 +55,6 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_3_在庫の点で購入可能なドリンクのリストを取得する
     machine = VendingMachine.new
-    suica = Suica.new(1000, 18, 2)
     expected = ['コーラ', 'レッドブル', '水']
     assert_equal expected, machine.stock_available_lists
   end
