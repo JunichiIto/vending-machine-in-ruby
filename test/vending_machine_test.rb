@@ -80,4 +80,28 @@ class VendingMachineTest < Minitest::Test
     assert_equal 100, machine.sales_amount
     assert_equal 0, suica.balance
   end
+
+  def test_step_5_購入時に販売日時、年齢、性別を保存する
+    machine = VendingMachine.new
+    suica = Suica.new(100, 18, 2)
+    machine.purchase('水', suica)
+    assert_equal '水', machine.purchase_histories[0][:name]
+    assert machine.purchase_histories[0][:time]
+    assert_equal 18, machine.purchase_histories[0][:user_age]
+    assert_equal 2, machine.purchase_histories[0][:user_sex]
+  end
+
+  def test_step_5_ジュース名を渡すと販売履歴を取得できる
+    machine = VendingMachine.new
+    suica1 = Suica.new(100, 18, 2)
+    suica2 = Suica.new(300, 20, 1)
+    machine.purchase('水', suica1)
+    machine.purchase('水', suica2)
+    machine.purchase('レッドブル', suica2)
+    expected = [
+      {name: '水', time: machine.purchase_histories[0][:time], user_age: 18, user_sex: 2},
+      {name: '水', time: machine.purchase_histories[1][:time], user_age: 20, user_sex: 1}
+    ]
+    assert_equal expected, machine.find_purchase_histories('水')
+  end
 end
