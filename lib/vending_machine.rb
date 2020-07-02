@@ -25,7 +25,7 @@ class VendingMachine
     @stocks[name].size > 0
   end
 
-  def buy(name, suica)
+  def purchase(name, suica)
     return nil unless stock_available?(name)
     price = @stocks[name][0].price
     return nil if suica.balance < price

@@ -16,7 +16,7 @@ class VendingMachineTest < Minitest::Test
   def test_step_2_Suicaで購入する
     machine = VendingMachine.new
     suica = Suica.new(120, 18, 2)
-    drink = machine.buy('コーラ', suica)
+    drink = machine.purchase('コーラ', suica)
     assert_equal 'コーラ', drink.name
     expected = [{:name=>"コーラ", :price=>120, :stock=>4}, {:name=>"レッドブル", :price=>200, :stock=>5}, {:name=>"水", :price=>100, :stock=>5}]
     assert_equal expected, machine.current_stocks
@@ -28,7 +28,7 @@ class VendingMachineTest < Minitest::Test
     machine = VendingMachine.new
     assert machine.stock_available?('コーラ')
     suica = Suica.new(119, 18, 2)
-    drink = machine.buy('コーラ', suica)
+    drink = machine.purchase('コーラ', suica)
     assert_nil drink
     expected = [{:name=>"コーラ", :price=>120, :stock=>5}, {:name=>"レッドブル", :price=>200, :stock=>5}, {:name=>"水", :price=>100, :stock=>5}]
     assert_equal expected, machine.current_stocks
@@ -40,14 +40,14 @@ class VendingMachineTest < Minitest::Test
     machine = VendingMachine.new
     assert machine.stock_available?('コーラ')
     suica = Suica.new(10000, 18, 2)
-    machine.buy('コーラ', suica)
-    machine.buy('コーラ', suica)
-    machine.buy('コーラ', suica)
-    machine.buy('コーラ', suica)
+    machine.purchase('コーラ', suica)
+    machine.purchase('コーラ', suica)
+    machine.purchase('コーラ', suica)
+    machine.purchase('コーラ', suica)
     assert machine.stock_available?('コーラ')
-    machine.buy('コーラ', suica)
+    machine.purchase('コーラ', suica)
     refute machine.stock_available?('コーラ')
-    assert_nil machine.buy('コーラ', suica)
+    assert_nil machine.purchase('コーラ', suica)
     assert_equal 9400, suica.balance
     assert_equal 600, machine.sales_amount
     assert_equal [{:name=>"レッドブル", :price=>200, :stock=>5}, {:name=>"水", :price=>100, :stock=>5}], machine.current_stocks
@@ -63,7 +63,7 @@ class VendingMachineTest < Minitest::Test
   def test_step_3_Suicaでレッドブルを購入する
     machine = VendingMachine.new
     suica = Suica.new(200, 18, 2)
-    drink = machine.buy('レッドブル', suica)
+    drink = machine.purchase('レッドブル', suica)
     assert_equal 'レッドブル', drink.name
     expected = [{:name=>"コーラ", :price=>120, :stock=>5}, {:name=>"レッドブル", :price=>200, :stock=>4}, {:name=>"水", :price=>100, :stock=>5}]
     assert_equal expected, machine.current_stocks
@@ -74,7 +74,7 @@ class VendingMachineTest < Minitest::Test
   def test_step_3_Suicaで水を購入する
     machine = VendingMachine.new
     suica = Suica.new(100, 18, 2)
-    drink = machine.buy('水', suica)
+    drink = machine.purchase('水', suica)
     assert_equal '水', drink.name
     expected = [{:name=>"コーラ", :price=>120, :stock=>5}, {:name=>"レッドブル", :price=>200, :stock=>5}, {:name=>"水", :price=>100, :stock=>4}]
     assert_equal expected, machine.current_stocks
