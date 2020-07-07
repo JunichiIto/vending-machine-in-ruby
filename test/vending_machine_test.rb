@@ -19,7 +19,7 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_2_Suicaで購入する
     machine = VendingMachine.new
-    suica = Suica.new(120, 18, 2)
+    suica = Suica.new(120, 18, :female)
     drink = machine.purchase('コーラ', suica)
     assert_equal 'コーラ', drink.name
     expected = [
@@ -35,7 +35,7 @@ class VendingMachineTest < Minitest::Test
   def test_step_2_チャージ残高が足りない場合
     machine = VendingMachine.new
     assert machine.stock_available?('コーラ')
-    suica = Suica.new(119, 18, 2)
+    suica = Suica.new(119, 18, :female)
     drink = machine.purchase('コーラ', suica)
     assert_nil drink
     expected = [
@@ -51,7 +51,7 @@ class VendingMachineTest < Minitest::Test
   def test_step_2_在庫が足りない場合
     machine = VendingMachine.new
     assert machine.stock_available?('コーラ')
-    suica = Suica.new(10000, 18, 2)
+    suica = Suica.new(10000, 18, :female)
     machine.purchase('コーラ', suica)
     machine.purchase('コーラ', suica)
     machine.purchase('コーラ', suica)
@@ -77,7 +77,7 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_3_Suicaでレッドブルを購入する
     machine = VendingMachine.new
-    suica = Suica.new(200, 18, 2)
+    suica = Suica.new(200, 18, :female)
     drink = machine.purchase('レッドブル', suica)
     assert_equal 'レッドブル', drink.name
     expected = [
@@ -92,7 +92,7 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_3_Suicaで水を購入する
     machine = VendingMachine.new
-    suica = Suica.new(100, 18, 2)
+    suica = Suica.new(100, 18, :female)
     drink = machine.purchase('水', suica)
     assert_equal '水', drink.name
     expected = [
@@ -107,24 +107,24 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_5_購入時に販売日時、年齢、性別を保存する
     machine = VendingMachine.new
-    suica = Suica.new(100, 18, 2)
+    suica = Suica.new(100, 18, :female)
     machine.purchase('水', suica)
     assert_equal '水', machine.purchase_histories[0][:name]
     assert machine.purchase_histories[0][:time]
     assert_equal 18, machine.purchase_histories[0][:user_age]
-    assert_equal 2, machine.purchase_histories[0][:user_sex]
+    assert_equal :female, machine.purchase_histories[0][:user_sex]
   end
 
   def test_step_5_ジュース名を渡すと販売履歴を取得できる
     machine = VendingMachine.new
-    suica1 = Suica.new(100, 18, 2)
-    suica2 = Suica.new(300, 20, 1)
+    suica1 = Suica.new(100, 18, :female)
+    suica2 = Suica.new(300, 20, :male)
     machine.purchase('水', suica1)
     machine.purchase('水', suica2)
     machine.purchase('レッドブル', suica2)
     expected = [
-      {name: '水', time: machine.purchase_histories[0][:time], user_age: 18, user_sex: 2},
-      {name: '水', time: machine.purchase_histories[1][:time], user_age: 20, user_sex: 1}
+      {name: '水', time: machine.purchase_histories[0][:time], user_age: 18, user_sex: :female},
+      {name: '水', time: machine.purchase_histories[1][:time], user_age: 20, user_sex: :male}
     ]
     assert_equal expected, machine.find_purchase_histories('水')
   end
