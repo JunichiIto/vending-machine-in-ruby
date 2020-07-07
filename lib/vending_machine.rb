@@ -33,7 +33,7 @@ class VendingMachine
     drink = @stocks[name].shift
     @sales_amount += drink.price
     suica.withdraw(drink.price)
-    purchase_history(drink.name, suica.user_age, suica.user_sex)
+    save_purchase_history(drink, suica)
     drink
   end
 
@@ -55,7 +55,7 @@ class VendingMachine
       end
     end
 
-    def purchase_history(name, user_age, user_sex)
-      @purchase_histories << {name: name, time: Time.now, user_age: user_age, user_sex: user_sex}
+    def save_purchase_history(drink, suica)
+      @purchase_histories << {name: drink.name, time: Time.now, user_age: suica.user_age, user_sex: suica.user_sex}
     end
 end
