@@ -22,5 +22,4 @@ class SuicaTest < Minitest::Test
     assert_equal 18, suica.user_age
     assert_equal 2, suica.user_sex
   end
-
 end

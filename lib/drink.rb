@@ -3,11 +3,6 @@
 class Drink
   attr_accessor :name, :price
 
-  def initialize(name, price)
-    @name = name
-    @price = price
-  end
-
   def self.cola
     self.new("コーラ", 120)
   end
@@ -18,5 +13,10 @@ class Drink
 
   def self.water
     self.new("水", 100)
+  end
+
+  def initialize(name, price)
+    @name = name
+    @price = price
   end
 end
