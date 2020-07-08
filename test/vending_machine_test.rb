@@ -108,24 +108,42 @@ class VendingMachineTest < Minitest::Test
   def test_step_5_購入時に販売日時、年齢、性別を保存する
     machine = VendingMachine.new
     suica = Suica.new(100, 18, :female)
+    time = Time.now
     machine.purchase('水', suica)
-    assert_equal '水', machine.purchase_histories[0][:name]
-    assert machine.purchase_histories[0][:time]
-    assert_equal 18, machine.purchase_histories[0][:user_age]
-    assert_equal :female, machine.purchase_histories[0][:user_sex]
+    history = machine.purchase_histories[0]
+    assert_equal '水', history[:name]
+    assert (time..Time.now).include?(history[:time])
+    assert_equal 18, history[:user_age]
+    assert_equal :female, history[:user_sex]
   end
 
   def test_step_5_ジュース名を渡すと販売履歴を取得できる
     machine = VendingMachine.new
     suica1 = Suica.new(100, 18, :female)
     suica2 = Suica.new(300, 20, :male)
+    time0 = Time.now
     machine.purchase('水', suica1)
+    time1 = Time.now
     machine.purchase('水', suica2)
+    time2 = Time.now
     machine.purchase('レッドブル', suica2)
-    expected = [
-      {name: '水', time: machine.purchase_histories[0][:time], user_age: 18, user_sex: :female},
-      {name: '水', time: machine.purchase_histories[1][:time], user_age: 20, user_sex: :male}
-    ]
-    assert_equal expected, machine.find_purchase_histories('水')
+    # 水の購入履歴[0]
+    history0 = machine.find_purchase_histories('水')[0]
+    assert_equal '水', history0[:name]
+    assert (time0..Time.now).include?(history0[:time])
+    assert_equal 18, history0[:user_age]
+    assert_equal :female, history0[:user_sex]
+    # 水の購入履歴[1]
+    history1 = machine.find_purchase_histories('水')[1]
+    assert_equal '水', history1[:name]
+    assert (time1..Time.now).include?(history1[:time])
+    assert_equal 20, history1[:user_age]
+    assert_equal :male, history1[:user_sex]
+    # レッドブルの購入履歴[0]
+    history2 = machine.find_purchase_histories('レッドブル')[0]
+    assert_equal 'レッドブル', history2[:name]
+    assert (time2..Time.now).include?(history2[:time])
+    assert_equal 20, history2[:user_age]
+    assert_equal :male, history2[:user_sex]
   end
 end
