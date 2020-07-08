@@ -38,7 +38,7 @@ class VendingMachine
   end
 
   def stock_available_lists
-    @stocks.map { |name, drink| name }
+    @stocks.keys
   end
 
   def find_purchase_histories(name)
