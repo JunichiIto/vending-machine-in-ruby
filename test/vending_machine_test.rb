@@ -19,7 +19,8 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_2_Suicaで購入する
     machine = VendingMachine.new
-    suica = Suica.new(120, 18, :female)
+    suica = Suica.new(18, :female)
+    suica.charge(120)
     drink = machine.purchase('コーラ', suica)
     assert_equal 'コーラ', drink.name
     expected = [
@@ -35,7 +36,8 @@ class VendingMachineTest < Minitest::Test
   def test_step_2_チャージ残高が足りない場合
     machine = VendingMachine.new
     assert machine.stock_available?('コーラ')
-    suica = Suica.new(119, 18, :female)
+    suica = Suica.new(18, :female)
+    suica.charge(119)
     drink = machine.purchase('コーラ', suica)
     assert_nil drink
     expected = [
@@ -51,7 +53,8 @@ class VendingMachineTest < Minitest::Test
   def test_step_2_在庫が足りない場合
     machine = VendingMachine.new
     assert machine.stock_available?('コーラ')
-    suica = Suica.new(10000, 18, :female)
+    suica = Suica.new(18, :female)
+    suica.charge(10000)
     machine.purchase('コーラ', suica)
     machine.purchase('コーラ', suica)
     machine.purchase('コーラ', suica)
@@ -77,7 +80,8 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_3_Suicaでレッドブルを購入する
     machine = VendingMachine.new
-    suica = Suica.new(200, 18, :female)
+    suica = Suica.new(18, :female)
+    suica.charge(200)
     drink = machine.purchase('レッドブル', suica)
     assert_equal 'レッドブル', drink.name
     expected = [
@@ -92,7 +96,8 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_3_Suicaで水を購入する
     machine = VendingMachine.new
-    suica = Suica.new(100, 18, :female)
+    suica = Suica.new(18, :female)
+    suica.charge(100)
     drink = machine.purchase('水', suica)
     assert_equal '水', drink.name
     expected = [
@@ -107,7 +112,8 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_5_購入時に販売日時、年齢、性別を保存する
     machine = VendingMachine.new
-    suica = Suica.new(100, 18, :female)
+    suica = Suica.new(18, :female)
+    suica.charge(100)
     time = Time.now
     machine.purchase('水', suica)
     history = machine.purchase_histories[0]
@@ -119,8 +125,10 @@ class VendingMachineTest < Minitest::Test
 
   def test_step_5_ジュース名を渡すと販売履歴を取得できる
     machine = VendingMachine.new
-    suica1 = Suica.new(100, 18, :female)
-    suica2 = Suica.new(300, 20, :male)
+    suica1 = Suica.new(18, :female)
+    suica1.charge(100)
+    suica2 = Suica.new(20, :male)
+    suica2.charge(300)
     time0 = Time.now
     machine.purchase('水', suica1)
     time1 = Time.now

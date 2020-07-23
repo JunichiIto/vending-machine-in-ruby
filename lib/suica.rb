@@ -1,14 +1,14 @@
 class Suica
   attr_accessor :balance, :user_age, :user_sex
 
-  def initialize(money, user_age, user_sex)
-    @balance = money >= 100 ? money : nil
+  def initialize(user_age, user_sex)
+    @balance = 0
     @user_age = user_age
     @user_sex = user_sex
   end
 
   def charge(money)
-    return nil if money < 100
+    raise ArgumentError, "moneyは100円以上の金額を指定してください" unless money >= 100
     @balance += money
   end
 
